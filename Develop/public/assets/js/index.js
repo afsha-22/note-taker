@@ -1,3 +1,5 @@
+// const note = require("../../../routes/note");
+
 let noteTitle;
 let noteText;
 let saveNoteBtn;
@@ -7,7 +9,7 @@ let noteList;
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
   noteText = document.querySelector('.note-textarea');
-  saveNoteBtn = document.querySelector('.save-note');
+  saveNoteBtn = document.querySelector('.note-save');
   newNoteBtn = document.querySelector('.new-note');
   noteList = document.querySelectorAll('.list-container .list-group');
 }
@@ -31,7 +33,7 @@ const getNotes = () =>
     headers: {
       'Content-Type': 'application/json',
     },
-  });
+  }).then(res => res.json());
 
 const saveNote = (note) =>
   fetch('/api/notes', {
@@ -66,7 +68,10 @@ const renderActiveNote = () => {
   }
 };
 
-const handleNoteSave = () => {
+const handleNoteSave = (e) => {
+  e.preventDefault();
+  console.log('Form submit invoked');
+
   const newNote = {
     title: noteTitle.value,
     text: noteText.value,
@@ -118,7 +123,9 @@ const handleRenderSaveBtn = () => {
 
 // Render the list of note titles
 const renderNoteList = async (notes) => {
-  let jsonNotes = await notes.json();
+  console.log("Entered Renderednote list", notes)
+  // let jsonNotes = await notes.json();
+  const jsonNotes = notes;
   if (window.location.pathname === '/notes') {
     noteList.forEach((el) => (el.innerHTML = ''));
   }
@@ -159,7 +166,9 @@ const renderNoteList = async (notes) => {
   }
 
   jsonNotes.forEach((note) => {
+    console.log("entered json notes for each loop")
     const li = createLi(note.title);
+    console.log(li)
     li.dataset.note = JSON.stringify(note);
 
     noteListItems.push(li);
